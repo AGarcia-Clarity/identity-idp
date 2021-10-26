@@ -9,6 +9,7 @@ class IdentityConfig
 
   CONVERTERS = {
     string: proc { |value| value.to_s },
+    symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
       value.split(',')
     end,
@@ -44,11 +45,12 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, allow_nil: false, options: {})
+  def add(key, type: :string, is_sensitive: false, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
+    raise "unexpected #{key}: #{value}, expected one of #{enum}" if enum && !enum.include?(value)
 
     @written_env[key] = converted_value
     @written_env
@@ -299,6 +301,8 @@ class IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
+    config.add(:vendor_status_phone, type: :symbol, enum: [:operational, :warning, :error])
+    config.add(:vendor_status_sms, type: :symbol, enum: [:operational, :warning, :error])
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
     config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)
