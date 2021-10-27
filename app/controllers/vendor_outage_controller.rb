@@ -13,7 +13,7 @@ class VendorOutageController < ApplicationController
   private
 
   def outage_message
-    if outage?(:voice) || outage?(:sms)
+    if vendor_outage?(:voice) || vendor_outage?(:sms)
       if from_idv_phone?
         t('vendor_outage.phone.blocked.idv')
       else

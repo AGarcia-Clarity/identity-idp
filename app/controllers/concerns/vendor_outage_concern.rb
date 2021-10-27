@@ -4,21 +4,21 @@ module VendorOutageConcern
   ALL_VENDORS = [:voice, :sms]
 
   def redirect_if_outage(vendors:, from: nil)
-    if all_outage?(vendors)
+    if all_vendor_outage?(vendors)
       session[:vendor_outage_redirect] = from
       redirect_to vendor_outage_url
     end
   end
 
-  def any_outage?(vendors = ALL_VENDORS)
-    vendors.any? { |vendor| outage?(vendor) }
+  def any_vendor_outage?(vendors = ALL_VENDORS)
+    vendors.any? { |vendor| vendor_outage?(vendor) }
   end
 
-  def all_outage?(vendors = ALL_VENDORS)
-    vendors.all? { |vendor| outage?(vendor) }
+  def all_vendor_outage?(vendors = ALL_VENDORS)
+    vendors.all? { |vendor| vendor_outage?(vendor) }
   end
 
-  def outage?(vendor)
+  def vendor_outage?(vendor)
     raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
     IdentityConfig.store.send("vendor_status_#{vendor}") != :operational
   end

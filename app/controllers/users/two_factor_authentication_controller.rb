@@ -36,7 +36,7 @@ module Users
 
     def phone_redirect
       return unless phone_enabled?
-      return if any_outage?([:voice, :sms])
+      return if any_vendor_outage?([:voice, :sms])
       validate_otp_delivery_preference_and_send_code
       true
     end
@@ -121,7 +121,7 @@ module Users
     end
 
     def redirect_to_vendor_outage_if_phone_only
-      redirect_to vendor_outage_url if all_outage?([:voice, :sms]) &&
+      redirect_to vendor_outage_url if all_vendor_outage?([:voice, :sms]) &&
                                        phone_enabled? &&
                                        !MfaPolicy.new(current_user).multiple_factors_enabled?
     end
