@@ -9,7 +9,7 @@ en:
         verify: We are having technical difficulties on our end and cannot verify phones
           at this time. Please use another authentication method if you have one,
           or try again later.
-        mfa: We cannot verify phones at this time. Please use another authentication method if you have one, or try again later.  Get updates
+        mfa: We cannot verify phones at this time. Please use another authentication method if you have one, or try again later.
       blocked:
         verify: We cannot verify phones at this time. Please try again later.
         idv: We cannot verify phones at this time. Please try again later or verify your address by mail instead.
