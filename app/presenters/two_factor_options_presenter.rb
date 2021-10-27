@@ -45,6 +45,11 @@ class TwoFactorOptionsPresenter
     !(piv_cac_required? || (aal3_only? && mfa_policy.two_factor_enabled?))
   end
 
+  def phone_outage?
+    IdentityConfig.store.vendor_status_phone_call == :error ||
+      IdentityConfig.store.vendor_status_sms == :error
+  end
+
   private
 
   def piv_cac_option

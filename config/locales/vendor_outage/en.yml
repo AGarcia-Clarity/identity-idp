@@ -1,0 +1,6 @@
+---
+en:
+  vendor_outage:
+    get_updates: Get updates
+    phone:
+      error: We are having technical difficulties on our end and cannot verify phones at this time. Please use another authentication method if you have one, or try again later.

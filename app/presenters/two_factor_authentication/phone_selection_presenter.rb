@@ -31,6 +31,11 @@ module TwoFactorAuthentication
       t('two_factor_authentication.two_factor_choice_options.less_secure_label')
     end
 
+    def disabled?
+      IdentityConfig.store.vendor_status_phone_call == :error ||
+        IdentityConfig.store.vendor_status_sms == :error
+    end
+
     private
 
     def masked_number(number)
