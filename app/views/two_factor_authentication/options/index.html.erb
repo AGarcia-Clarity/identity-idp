@@ -31,7 +31,7 @@
           <%= radio_button_tag(
                 'two_factor_options_form[selection]',
                 option.type,
-                index = @presenter.first_enabled_option_index,
+                index == @presenter.first_enabled_option_index,
                 disabled: option.disabled?,
                 class: "usa-radio__input usa-radio__input--tile",
               ) %>
