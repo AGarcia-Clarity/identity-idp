@@ -50,7 +50,9 @@ class IdentityConfig
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
-    raise "unexpected #{key}: #{value}, expected one of #{enum}" if enum && !enum.include?(value)
+    if enum && !enum.include?(converted_value)
+      raise "unexpected #{key}: #{value}, expected one of #{enum}"
+    end
 
     @written_env[key] = converted_value
     @written_env
