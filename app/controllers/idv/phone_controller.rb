@@ -1,6 +1,7 @@
 module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
+    include VendorOutageConcern
 
     attr_reader :idv_form
 
@@ -26,6 +27,8 @@ module Idv
     end
 
     def create
+      redirect_to vendor_outage_path(from: :idv_phone) if !idv_form.phone_belongs_to_user? &&
+                                                          all_outage?([:voice, :sms])
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
