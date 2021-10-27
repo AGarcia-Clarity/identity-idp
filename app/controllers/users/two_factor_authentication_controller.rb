@@ -1,8 +1,10 @@
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
+    include VendorOutageConcern
 
     before_action :check_remember_device_preference
+    before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
 
     def show
       service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
@@ -34,6 +36,7 @@ module Users
 
     def phone_redirect
       return unless phone_enabled?
+      return if any_outage?([:voice, :sms])
       validate_otp_delivery_preference_and_send_code
       true
     end
@@ -44,7 +47,7 @@ module Users
     end
 
     def redirect_on_nothing_enabled
-      redirect_to two_factor_options_url
+      redirect_to login_two_factor_options_path
     end
 
     def phone_enabled?
@@ -115,6 +118,12 @@ module Users
         otp_delivery_preference: phone_configuration.delivery_preference,
         reauthn: reauthn?,
       )
+    end
+
+    def redirect_to_vendor_outage_if_phone_only
+      redirect_to vendor_outage_url if all_outage?([:voice, :sms]) &&
+                                       phone_enabled? &&
+                                       !MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
     def capture_analytics_for_exception(telephony_error)

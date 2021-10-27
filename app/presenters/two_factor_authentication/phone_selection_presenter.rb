@@ -32,8 +32,14 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      IdentityConfig.store.vendor_status_phone_call == :error ||
+      case type
+      when 'voice'
+        IdentityConfig.store.vendor_status_voice == :error
+      when 'sms'
         IdentityConfig.store.vendor_status_sms == :error
+      else
+        false
+      end
     end
 
     private
