@@ -1,7 +1,7 @@
 class VendorOutageController < ApplicationController
   include VendorOutageConcern
 
-  def new
+  def show
     analytics.track_event(
       Analytics::VENDOR_OUTAGE,
       redirect_from: session.delete(:vendor_outage_redirect),
